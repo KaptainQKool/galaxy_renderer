@@ -1,6 +1,6 @@
+from galaxy_renderer.config import PRESETS, preset
 from galaxy_renderer import renderer as gr
-from galaxy_renderer import config
 import star_catalogues as sc
+import argparse
 
-
-boink = sc.star_data('gaia_dr3/GaiaSource_*.csv.gz')
+gr.render_frames(preset, **{**PRESETS[''], **PRESETS[preset]})

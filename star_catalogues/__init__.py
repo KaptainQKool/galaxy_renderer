@@ -1,4 +1,4 @@
-from name_generator import generate_name
+import name_generator.name_generator as namegen
 from typing import Iterator, Any
 from pathlib import Path
 import pandas as pd
@@ -8,7 +8,9 @@ import json
 
 def star_data(
         glob_str: str,
-        out_json: str = ''
+        stars_per_file: int = 0,
+        out_json: str = '',
+        origin: list[float] | None = None
     ) -> dict[str, list[dict[str, Any]]]:
     
     stars: dict[str, list[dict[str, Any]]] = {
@@ -17,16 +19,20 @@ def star_data(
     
     data_paths: Iterator[Path] = paths(glob_str)
     for p in data_paths:
-        print(f'    Reading from file {p.name}')
+        print(f'    Reading from file {p.name}', end='')
         match p.suffixes:
             case ['.csv', '.gz']:
                 contents: pd.DataFrame = pd.read_csv(p, compression='gzip', sep=',', comment='#', on_bad_lines='skip')
                 nrows: int = len(contents.index)
+                print(f' ({nrows} rows)')
                 
                 stars_temp: list[dict[str, Any]] = []
                 for i, row in contents.iterrows():
+                    if stars_per_file and int(i) >= stars_per_file:
+                        break
+                    
                     designation = row['designation']
-                    name = generate_name()
+                    name = namegen.generate(save_output=False, print_output=False)
                     
                     dec = row['dec']
                     ra = row['ra']
@@ -45,26 +51,34 @@ def star_data(
                     y = distance_ly * np.sin(np.deg2rad(ra)) * np.sin(np.deg2rad(dec))
                     z = distance_ly * np.cos(np.deg2rad(ra))
                     
-                    temp_star: dict[str, Any] = {
-                        'designation': designation,
-                        
-                        'x': x,
-                        'y': y,
-                        'z': z
-                    }
-                    stars_temp.append(temp_star)
+                    if origin:
+                        x -= origin[0]
+                        y -= origin[1]
+                        z -= origin[2]
+                    
+                    if not (np.isnan(x) or np.isnan(y) or np.isnan(z)):
+                        temp_star: dict[str, Any] = {
+                            'designation': designation,
+                            'name': name,
+                            
+                            'x': x,
+                            'y': y,
+                            'z': z
+                        }
+                        stars_temp.append(temp_star)
                 
+                print(f'    Got {len(stars_temp)} stars from {p.name}')
                 stars['stars'].extend(stars_temp)
                 
             case ['.json']:
-                print('json file')
+                print()
             case _:
                 raise NotImplementedError(''.join(p.suffixes)+' files are not supported')
     
     if out_json:
         print('    Saving star data to '+out_json+'...')
-        with open(out_json, 'w') as out:
-            json.dump(stars, out)
+        with open(str(Path(__file__).parent)+'/data/generated/'+out_json, 'w') as out:
+            json.dump(stars, out, indent=2)
         print('    Done!')
     
     return stars
@@ -72,5 +86,5 @@ def star_data(
 
 def paths(glob_str: str) -> Iterator[Path]:
     p = Path(__file__).parent
-    glob = p.glob(glob_str)
+    glob = p.glob('data/'+glob_str)
     return glob

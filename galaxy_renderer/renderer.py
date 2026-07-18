@@ -8,8 +8,16 @@ import pandas as pd
 import json
 
 
-def render_frames():
-    return
+def render_frames(
+        preset: str,
+        frames: int,
+        data_files: str,
+        stars_per_file: int,
+        json_output: str,
+        galactic_center: list[float]
+    ):
+    
+    stars: dict[str, list[dict[str, Any]]] = sc.star_data(data_files, stars_per_file, json_output, galactic_center)
 
 
 def draw(rgb: list[list[list[float]]], resolution: list[int], filename: str):
