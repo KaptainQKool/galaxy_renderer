@@ -1,2 +1,2 @@
 # galaxy_renderer
-Matplotlib rendering of what it would look like to go faster than light.
+Rendering of a crap ton of stars (stars not included). A bunch of config is available.
