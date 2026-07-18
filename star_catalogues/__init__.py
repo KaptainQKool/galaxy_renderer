@@ -1,4 +1,4 @@
-from galaxy_renderer.config import star_names
+from name_generator import generate_name
 from typing import Iterator, Any
 from pathlib import Path
 import pandas as pd
@@ -74,38 +74,3 @@ def paths(glob_str: str) -> Iterator[Path]:
     p = Path(__file__).parent
     glob = p.glob(glob_str)
     return glob
-
-
-def generate_name() -> str:
-    words_mean = star_names['words']['mean']
-    words_stdev = star_names['words']['stdev']
-    words_min = star_names['words']['min']
-    
-    n_words = max(words_min, int(np.random.normal(words_mean, words_stdev)))
-    
-    name_chars: list[str] = []
-    for w in range(n_words):
-        length_mean = star_names['word_length']['mean']
-        length_stdev = star_names['word_length']['stdev']
-        length_min = star_names['word_length']['min']
-        
-        length = max(length_min, int(np.random.normal(length_mean, length_stdev)))
-        
-        chars = [l['char'] for l in star_names['letters'][:]]
-        weights = [l['weight'] for l in star_names['letters'][:]]
-        weights_n = [float(i)/sum(weights) for i in weights]
-        
-        letters: list[str] = np.random.choice(chars, length, p=weights_n)
-        letters[0] = letters[0].upper()
-        
-        if w > 0:
-            seps = [l['char'] for l in star_names['seps'][:]]
-            sep_weights = [l['weight'] for l in star_names['seps'][:]]
-            sep_weights_n = [float(i)/sum(sep_weights) for i in sep_weights]
-            
-            sep: str = np.random.choice(seps, p=sep_weights_n)
-            name_chars.append(sep)
-        name_chars.extend(letters)
-        
-    name = ''.join(name_chars)
-    return name
