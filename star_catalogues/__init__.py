@@ -24,7 +24,7 @@ def star_data(
             case ['.csv', '.gz']:
                 contents: pd.DataFrame = pd.read_csv(p, compression='gzip', sep=',', comment='#', on_bad_lines='skip')
                 nrows: int = len(contents.index)
-                print(f' ({nrows} rows)')
+                print(f' ({nrows} rows)', end='')
                 
                 stars_temp: list[dict[str, Any]] = []
                 contents_shuffled = contents.sample(frac=1).reset_index()
@@ -72,7 +72,8 @@ def star_data(
                 stars['stars'].extend(stars_temp)
                 
             case ['.json']:
-                print()
+                with open(p) as in_json:
+                    stars = json.load(in_json)
             case _:
                 raise NotImplementedError(''.join(p.suffixes)+' files are not supported')
     
