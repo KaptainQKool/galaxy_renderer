@@ -8,15 +8,14 @@ frames: int = 1
 
 # regex string for data files to match
 # inside the 'star_catalogues/data' folder
-data_files: str = 'gaia_dr3/GaiaSource_*.csv.gz'
-# how many stars to pull from each file
-# (csv.gz files only)
-# set to 0 to get all stars
-stars_per_file: int = 100
+data_files: str = 'gaia_edr3/GaiaSource_*.csv.gz'
+# how many stars to pull from each file (csv.gz files only)
+# set to 0 to get all stars (not recommended)
+stars_per_file: int = 1000
 # file path to save star positions to
 # inside the 'star_catalogues/data/generated' folder
 # set to an empty string to disable saving
-json_output: str = 'star_map_test.json'
+json_output: str = ''
 
 # coordinates of the galactic center
 # (or whatever coordinate origin you want to use)
@@ -48,11 +47,11 @@ PRESETS: dict[str, dict[str, Any]] = {
         'galactic_center': galactic_center()
     },
     
-    'gaia_dr3': {
+    'gaia_edr3': {
         'frames': 1,
         
-        'data_files': 'gaia_dr3/GaiaSource_*.csv.gz',
-        'stars_per_file': 0,
+        'data_files': 'gaia_edr3/GaiaSource_*.csv.gz',
+        'stars_per_file': 1000,
         'json_output': '',
         
         'galactic_center': [

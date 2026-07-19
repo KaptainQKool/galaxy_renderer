@@ -27,8 +27,9 @@ def star_data(
                 print(f' ({nrows} rows)')
                 
                 stars_temp: list[dict[str, Any]] = []
-                for i, row in contents.iterrows():
-                    if stars_per_file and int(i) >= stars_per_file:
+                contents_shuffled = contents.sample(frac=1).reset_index()
+                for i, row in contents_shuffled.iterrows():
+                    if stars_per_file > 0 and int(i) >= stars_per_file:
                         break
                     
                     designation = row['designation']

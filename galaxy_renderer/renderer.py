@@ -18,6 +18,18 @@ def render_frames(
     ):
     
     stars: dict[str, list[dict[str, Any]]] = sc.star_data(data_files, stars_per_file, json_output, galactic_center)
+    
+    stars_x = [s['x'] for s in stars['stars']]
+    stars_y = [s['y'] for s in stars['stars']]
+    stars_z = [s['z'] for s in stars['stars']]
+    
+    plt.subplot(2, 2, 1)
+    plt.scatter(stars_x, stars_y)
+    plt.subplot(2, 2, 2)
+    plt.scatter(stars_y, stars_z)
+    plt.subplot(2, 2, 3)
+    plt.scatter(stars_z, stars_x)
+    plt.show()
 
 
 def draw(rgb: list[list[list[float]]], resolution: list[int], filename: str):
