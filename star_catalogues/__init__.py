@@ -1,5 +1,6 @@
 import name_generator.name_generator as namegen
 from typing import Iterator, Any
+from copy import deepcopy
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -17,9 +18,10 @@ def star_data(
         'stars': []
     }
     
-    data_paths: Iterator[Path] = paths(glob_str)
-    n_files: int = sum(1 for _ in data_paths)
+    data_paths_2: Iterator[Path] = paths(glob_str)
+    n_files: int = sum(1 for _ in data_paths_2)
     nf: int = 1
+    data_paths: Iterator[Path] = paths(glob_str)
     for p in data_paths:
         print(f'    Reading from file {p.name}', end='')
         match p.suffixes:
