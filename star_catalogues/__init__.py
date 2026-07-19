@@ -18,6 +18,8 @@ def star_data(
     }
     
     data_paths: Iterator[Path] = paths(glob_str)
+    n_files: int = sum(1 for _ in data_paths)
+    nf: int = 1
     for p in data_paths:
         print(f'    Reading from file {p.name}', end='')
         match p.suffixes:
@@ -76,6 +78,8 @@ def star_data(
                     stars = json.load(in_json)
             case _:
                 raise NotImplementedError(''.join(p.suffixes)+' files are not supported')
+        print(f' - {nf}/{n_files}')
+        nf += 1
     
     if out_json:
         print('    Saving star data to '+out_json+'...')
