@@ -23,12 +23,12 @@ def star_data(
     nf: int = 1
     data_paths: Iterator[Path] = paths(glob_str)
     for p in data_paths:
-        print(f'    Reading from file {p.name}', end='')
+        print(f'    {str(nf).rjust(len(str(n_files)))}/{n_files} - Reading from file {p.name}', end='')
         match p.suffixes:
             case ['.csv', '.gz']:
                 contents: pd.DataFrame = pd.read_csv(p, compression='gzip', sep=',', comment='#', on_bad_lines='skip')
                 nrows: int = len(contents.index)
-                print(f' ({nrows} rows)', end='')
+                print(f' ({nrows} rows)')
                 
                 stars_temp: list[dict[str, Any]] = []
                 contents_shuffled = contents.sample(frac=1).reset_index()
@@ -72,15 +72,18 @@ def star_data(
                         }
                         stars_temp.append(temp_star)
                 
-                print(f'    Got {len(stars_temp)} stars from {p.name}')
+                print(f'    {''.rjust(4 + 2*len(str(n_files)))}Got {len(stars_temp)} stars from {p.name}')
                 stars['stars'].extend(stars_temp)
                 
             case ['.json']:
                 with open(p) as in_json:
-                    stars = json.load(in_json)
+                    stars_temp_json = json.load(in_json)
+                print(f'\n    Got {len(stars_temp_json['stars'])} stars from {p.name}')
+                stars['stars'].extend(stars_temp_json)
+                
             case _:
                 raise NotImplementedError(''.join(p.suffixes)+' files are not supported')
-        print(f' - {nf}/{n_files}')
+        
         nf += 1
     
     if out_json:

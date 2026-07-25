@@ -11,11 +11,11 @@ frames: int = 1
 data_files: str = 'gaia_edr3/GaiaSource_*.csv.gz'
 # how many stars to pull from each file (csv.gz files only)
 # set to 0 to get all stars (not recommended)
-stars_per_file: int = 1000
+stars_per_file: int = 100000
 # file path to save star positions to
 # inside the 'star_catalogues/data/generated' folder
 # set to an empty string to disable saving
-json_output: str = ''
+json_output: str = 'star_chart_gaia_edr3_rand_8000000_07-18-26.json'
 
 # coordinates of the galactic center
 # (or whatever coordinate origin you want to use)
