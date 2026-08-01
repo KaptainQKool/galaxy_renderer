@@ -19,8 +19,8 @@ json_output: str = 'star_chart_gaia_edr3_rand_8000000_07-18-26.json'
 
 # coordinates of the galactic center
 # (or whatever coordinate origin you want to use)
-# method because i didn't just want to put in a
-# bunch of random numbers and having the full
+# it's a method because i didn't just want to put
+# in a bunch of random numbers and having the full
 # calculations in just one line would be insane
 def galactic_center() -> list[float]:
     # https://en.wikipedia.org/wiki/Sagittarius_A*
@@ -61,3 +61,129 @@ PRESETS: dict[str, dict[str, Any]] = {
         ]
     }
 }
+
+r_sun_ly: float = 0.0000000735355
+temp_to_peak_wl = lambda T: 2897772.9 / T
+star_classes: list[dict[str, Any]] = [
+    {
+        'class': 'O',
+        'radius': {
+            'max': 700,
+            'min': 6.6
+        },
+        'temp': {
+            'max': 50000,
+            'min': 33000
+        },
+        'luminosity': {
+            'max': 1000000,
+            'min': 30000
+        },
+        'weight': 3
+    },
+    {
+        'class': 'B',
+        'radius': {
+            'max': 6.6,
+            'min': 1.8
+        },
+        'temp': {
+            'max': 33000,
+            'min': 10000
+        },
+        'luminosity': {
+            'max': 30000,
+            'min': 25
+        },
+        'weight': 12000
+    },
+    {
+        'class': 'A',
+        'radius': {
+            'max': 1.8,
+            'min': 1.4
+        },
+        'temp': {
+            'max': 10000,
+            'min': 7300
+        },
+        'luminosity': {
+            'max': 25,
+            'min': 5
+        },
+        'weight': 61000
+    },
+    {
+        'class': 'F',
+        'radius': {
+            'max': 1.4,
+            'min': 1.15
+        },
+        'temp': {
+            'max': 7300,
+            'min': 6000
+        },
+        'luminosity': {
+            'max': 5,
+            'min': 1.5
+        },
+        'weight': 300000
+    },
+    {
+        'class': 'G',
+        'radius': {
+            'max': 1.15,
+            'min': 0.96
+        },
+        'temp': {
+            'max': 6000,
+            'min': 5300
+        },
+        'luminosity': {
+            'max': 1.5,
+            'min': 0.6
+        },
+        'weight': 760000
+    },
+    {
+        'class': 'K',
+        'radius': {
+            'max': 0.96,
+            'min': 0.7
+        },
+        'temp': {
+            'max': 5300,
+            'min': 3900
+        },
+        'luminosity': {
+            'max': 0.6,
+            'min': 0.08
+        },
+        'weight': 1200000
+    },
+    {
+        'class': 'M',
+        'radius': {
+            'max': 0.7,
+            'min': 0.001
+        },
+        'temp': {
+            'max': 3900,
+            'min': 2300
+        },
+        'luminosity': {
+            'max': 0.08,
+            'min': 0.0003
+        },
+        'weight': 7600000
+    }
+]
+for c in star_classes:
+    c['peak_wl'] = {
+        'max': temp_to_peak_wl(c['temp']['min']),
+        'min': temp_to_peak_wl(c['temp']['max'])
+    }
+    c['radius_ly'] = {
+        'max': r_sun_ly * c['radius']['max'],
+        'min': r_sun_ly * c['radius']['min']
+    }
