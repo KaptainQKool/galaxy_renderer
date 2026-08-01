@@ -1,4 +1,5 @@
 import name_generator.name_generator as namegen
+from galaxy_renderer.config import star_classes
 from typing import Iterator, Any
 from copy import deepcopy
 from pathlib import Path
@@ -11,7 +12,8 @@ def star_data(
         glob_str: str,
         stars_per_file: int = 0,
         out_json: str = '',
-        origin: list[float] | None = None
+        origin: list[float] | None = None,
+        max_distance: float = 0
     ) -> dict[str, list[dict[str, Any]]]:
     
     stars: dict[str, list[dict[str, Any]]] = {
@@ -38,6 +40,17 @@ def star_data(
                     
                     designation = row['designation']
                     name = namegen.generate(save_output=False, print_output=False)
+
+                    class_weights = [c['weight'] for c in star_classes[:]]
+                    class_weights_n = [float(i)/sum(class_weights) for i in class_weights]
+                    class_index = np.random.choice(len(star_classes), 1, p=class_weights_n)[0]
+                    star_class = star_classes[class_index]
+
+                    class_id = star_class['class']
+                    radius = np.random.uniform(star_class['radius_ly']['min'], star_class['radius_ly']['max'])
+                    luminosity = np.random.uniform(star_class['luminosity']['min'], star_class['luminosity']['max'])
+                    peak_wl = np.random.uniform(star_class['peak_wl']['min'], star_class['peak_wl']['max'])
+                    wl_var = np.random.uniform(star_class['wl_var']['min'], star_class['wl_var']['max'])
                     
                     dec = row['dec']
                     ra = row['ra']
@@ -60,11 +73,19 @@ def star_data(
                         x -= origin[0]
                         y -= origin[1]
                         z -= origin[2]
-                    
-                    if not (np.isnan(x) or np.isnan(y) or np.isnan(z)):
+                    distance_from_center = np.sqrt(x**2 + y**2 + z**2)
+
+                    discard = (np.isnan(x) or np.isnan(y) or np.isnan(z)) or (max_distance > 0 and distance_from_center > max_distance)
+                    if not discard:
                         temp_star: dict[str, Any] = {
                             'designation': designation,
                             'name': name,
+
+                            'class': class_id,
+                            'radius': radius,
+                            'luminosity': luminosity,
+                            'peak_wl': peak_wl,
+                            'wl_var': wl_var,
                             
                             'x': x,
                             'y': y,

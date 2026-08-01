@@ -15,7 +15,7 @@ stars_per_file: int = 100000
 # file path to save star positions to
 # inside the 'star_catalogues/data/generated' folder
 # set to an empty string to disable saving
-json_output: str = 'star_chart_gaia_edr3_rand_8000000_07-18-26.json'
+json_output: str = 'star_chart_gaia_edr3_rand_8000000_08-01-26_capped_distance.json'
 
 # coordinates of the galactic center
 # (or whatever coordinate origin you want to use)
@@ -35,6 +35,10 @@ def galactic_center() -> list[float]:
     
     return [x, y, z]
 
+# max distance in ly from galactic center
+# discards stars outside the milky way
+max_distance = 100000
+
 
 PRESETS: dict[str, dict[str, Any]] = {
     '': {
@@ -44,7 +48,8 @@ PRESETS: dict[str, dict[str, Any]] = {
         'stars_per_file': stars_per_file,
         'json_output': json_output,
         
-        'galactic_center': galactic_center()
+        'galactic_center': galactic_center(),
+        'max_distance': max_distance
     },
     
     'gaia_edr3': {
@@ -58,7 +63,8 @@ PRESETS: dict[str, dict[str, Any]] = {
             26996.0 * np.sin(np.deg2rad((360 / 24) * (17 + (45 + (40.0409) / 60) / 60))) * np.cos(np.deg2rad(-29 - (28.118 / (3600 * 1000)))),
             26996.0 * np.sin(np.deg2rad((360 / 24) * (17 + (45 + (40.0409) / 60) / 60))) * np.sin(np.deg2rad(-29 - (28.118 / (3600 * 1000)))),
             26996.0 * np.cos(np.deg2rad((360 / 24) * (17 + (45 + (40.0409) / 60) / 60)))
-        ]
+        ],
+        'max_distance': 100000
     }
 }
 
@@ -79,6 +85,10 @@ star_classes: list[dict[str, Any]] = [
             'max': 1000000,
             'min': 30000
         },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
+        },
         'weight': 3
     },
     {
@@ -94,6 +104,10 @@ star_classes: list[dict[str, Any]] = [
         'luminosity': {
             'max': 30000,
             'min': 25
+        },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
         },
         'weight': 12000
     },
@@ -111,6 +125,10 @@ star_classes: list[dict[str, Any]] = [
             'max': 25,
             'min': 5
         },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
+        },
         'weight': 61000
     },
     {
@@ -126,6 +144,10 @@ star_classes: list[dict[str, Any]] = [
         'luminosity': {
             'max': 5,
             'min': 1.5
+        },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
         },
         'weight': 300000
     },
@@ -143,6 +165,10 @@ star_classes: list[dict[str, Any]] = [
             'max': 1.5,
             'min': 0.6
         },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
+        },
         'weight': 760000
     },
     {
@@ -159,6 +185,10 @@ star_classes: list[dict[str, Any]] = [
             'max': 0.6,
             'min': 0.08
         },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
+        },
         'weight': 1200000
     },
     {
@@ -174,6 +204,10 @@ star_classes: list[dict[str, Any]] = [
         'luminosity': {
             'max': 0.08,
             'min': 0.0003
+        },
+        'wl_var': {
+            'max': 1500,
+            'min': 500
         },
         'weight': 7600000
     }

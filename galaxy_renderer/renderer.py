@@ -14,10 +14,11 @@ def render_frames(
         data_files: str,
         stars_per_file: int,
         json_output: str,
-        galactic_center: list[float]
+        galactic_center: list[float],
+        max_distance: float
     ):
     
-    stars: dict[str, list[dict[str, Any]]] = sc.star_data(data_files, stars_per_file, json_output, galactic_center)
+    stars: dict[str, list[dict[str, Any]]] = sc.star_data(data_files, stars_per_file, json_output, galactic_center, max_distance)
     
     stars_x = [s['x'] for s in stars['stars']]
     stars_y = [s['y'] for s in stars['stars']]
