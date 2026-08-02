@@ -11,7 +11,7 @@ frames: int = 1
 data_files: str = 'gaia_edr3/GaiaSource_*.csv.gz'
 # how many stars to pull from each file (csv.gz files only)
 # set to 0 to get all stars (not recommended)
-stars_per_file: int = 100000
+stars_per_file: int = 10000000
 # file path to save star positions to
 # inside the 'star_catalogues/data/generated' folder
 # set to an empty string to disable saving
@@ -64,7 +64,7 @@ PRESETS: dict[str, dict[str, Any]] = {
             26996.0 * np.sin(np.deg2rad((360 / 24) * (17 + (45 + (40.0409) / 60) / 60))) * np.sin(np.deg2rad(-29 - (28.118 / (3600 * 1000)))),
             26996.0 * np.cos(np.deg2rad((360 / 24) * (17 + (45 + (40.0409) / 60) / 60)))
         ],
-        'max_distance': 100000
+        'max_distance': 10000000
     }
 }
 
